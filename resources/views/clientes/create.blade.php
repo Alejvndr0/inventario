@@ -2,11 +2,11 @@
 
 @section('content')
     <div class="container">
-        <h1>Agregar Almacén</h1>
-        <form method="POST" action="{{ route('almacenes.store') }}">
+        <h1>Agregar Cliente</h1>
+        <form method="POST" action="{{ route('clientes.store') }}">
             @csrf
             <div class="form-group">
-                <label for="nombre">Nombre del Almacén</label>
+                <label for="nombre">Nombre del cliente</label>
                 <input type="text" name="nombre" class="form-control" required>
             </div>
             <div class="form-group">
@@ -22,7 +22,7 @@
                 <input type="text" id="longitud" name="longitud" class="form-control" required>
             </div>
             <div id="map" style="height: 400px;"></div>
-            <button type="submit" class="btn btn-primary">Agregar Almacén</button>
+            <button type="submit" class="btn btn-primary">Agregar cliente</button>
         </form>
     </div>
 

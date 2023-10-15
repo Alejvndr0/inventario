@@ -16,9 +16,9 @@ return new class extends Migration
             $table->string('nombre');
             $table->text('descripcion');
             $table->decimal('precio', 10, 2);
-            $table->point('ubicacion_geografica')->nullable();
             $table->timestamps();
         });
+        
         Schema::create('almacenes', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
@@ -26,16 +26,18 @@ return new class extends Migration
             $table->point('ubicacion_geografica')->nullable();
             $table->timestamps();
         });
+        
         Schema::create('stock_en_almacen', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('producto_id');
             $table->unsignedBigInteger('almacen_id');
             $table->integer('cantidad');
             $table->timestamps();
-
+        
             $table->foreign('producto_id')->references('id')->on('productos')->onDelete('cascade');
             $table->foreign('almacen_id')->references('id')->on('almacenes')->onDelete('cascade');
         });
+        
         Schema::create('clientes', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
@@ -43,37 +45,41 @@ return new class extends Migration
             $table->point('ubicacion_geografica')->nullable();
             $table->timestamps();
         });
+        
         Schema::create('pedidos', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('cliente_id');
             $table->date('fecha_pedido');
             $table->timestamps();
-
+        
             $table->foreign('cliente_id')->references('id')->on('clientes')->onDelete('cascade');
         });
+        
         Schema::create('detalles_del_pedido', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('pedido_id');
             $table->unsignedBigInteger('producto_id');
             $table->integer('cantidad');
             $table->timestamps();
-
+        
             $table->foreign('pedido_id')->references('id')->on('pedidos')->onDelete('cascade');
             $table->foreign('producto_id')->references('id')->on('productos')->onDelete('cascade');
         });
+        
         Schema::create('rutas_de_entrega', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
             $table->text('descripcion');
-            $table->unsignedBigInteger('almacen_inicio_id');
-            $table->unsignedBigInteger('almacen_destino_id');
+            $table->unsignedBigInteger('almacen_inicio_id'); // Almacén de inicio
+            $table->unsignedBigInteger('almacen_destino_id'); // Almacén de destino
+            $table->unsignedBigInteger('cliente_id'); // Cliente al que se entrega
             $table->lineString('distancia')->nullable();
             $table->timestamps();
-
+        
             $table->foreign('almacen_inicio_id')->references('id')->on('almacenes')->onDelete('cascade');
             $table->foreign('almacen_destino_id')->references('id')->on('almacenes')->onDelete('cascade');
+            $table->foreign('cliente_id')->references('id')->on('clientes')->onDelete('cascade');
         });
-
 
     }
 
