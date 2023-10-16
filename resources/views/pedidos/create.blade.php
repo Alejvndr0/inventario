@@ -20,18 +20,20 @@
         <div class="form-group">
             <label for="productos">Selecciona productos:</label>
             <select name="productos[]" id="productos" class="form-control" multiple required>
-                @foreach ($productos as $producto)
-                <option value="{{ $producto->id }}">{{ $producto->nombre }}</option>
+                @foreach ($stockProductos as $producto)
+                    <option value="{{ $producto->id }}">
+                        {{ $producto->nombre }} (Stock: {{ $producto->stocks->sum('cantidad') }})
+                    </option>
                 @endforeach
             </select>
         </div>
+        
         @foreach ($productos as $producto)
-<div class="form-group">
-    <label for="cantidad[{{ $producto->id }}]">Cantidad de {{ $producto->nombre }}</label>
-    <input type="number" id="cantidad[{{ $producto->id }}]" name="cantidad[{{ $producto->id }}]" class="form-control" required step="1">
-</div>
-@endforeach
-
+            <div class="form-group">
+                <label for="cantidad[{{ $producto->id }}]">Cantidad de {{ $producto->nombre }} (Stock: {{ $producto->stocks->sum('cantidad') }})</label>
+                <input type="number" id="cantidad[{{ $producto->id }}]" name="cantidad[{{ $producto->id }}]" class="form-control">
+            </div>
+        @endforeach
         <button type="submit" class="btn btn-primary">Crear Pedido</button>
     </form>
 </div>
@@ -47,4 +49,5 @@
     </div>
 </div>
 @endif
+</div>
 @endsection
