@@ -21,7 +21,7 @@
                         <td>{{ $pedido->cliente->nombre }}</td>
                         <td>{{ $pedido->fecha_pedido }}</td>
                         <td>
-                            @foreach ($pedido->DetallePedido as $detalle)
+                            @foreach ($pedido->detalles as $detalle)
                                 {{ $detalle->producto->nombre }}: {{ $detalle->cantidad }}<br>
                             @endforeach
                         </td>

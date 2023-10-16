@@ -29,26 +29,30 @@ class PedidosController extends Controller
             'cliente_id' => 'required|exists:clientes,id',
             'fecha_pedido' => 'required|date',
             'productos' => 'array|required',
-            'cantidad' => 'array|required',
+            'cantidad' => 'required|array', // Asegura que 'cantidad' sea un array
         ]);
 
-        $pedido = Pedido::create([
-            'cliente_id' => $request->input('cliente_id'),
-            'fecha_pedido' => $request->input('fecha_pedido'),
-        ]);
-
-        $productosSeleccionados = $request->input('productos');
-        $cantidades = $request->input('cantidad');
-
-        foreach ($productosSeleccionados as $productoId) {
-            DetallePedido::create([
-                'pedido_id' => $pedido->id,
-                'producto_id' => $productoId,
-                'cantidad' => $cantidades[$productoId],
+        try {
+            $pedido = Pedido::create([
+                'cliente_id' => $request->input('cliente_id'),
+                'fecha_pedido' => $request->input('fecha_pedido'),
             ]);
-        }
 
-        return redirect()->route('pedidos.index');
+            $productosSeleccionados = $request->input('productos');
+            $cantidades = $request->input('cantidad');
+
+            foreach ($productosSeleccionados as $productoId) {
+                DetallePedido::create([
+                    'pedido_id' => $pedido->id,
+                    'producto_id' => $productoId,
+                    'cantidad' => $cantidades[$productoId],
+                ]);
+            }
+
+            return redirect()->route('pedidos.index')->with('success', 'Pedido creado exitosamente');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 
     public function edit($id)
@@ -56,7 +60,10 @@ class PedidosController extends Controller
         $pedido = Pedido::find($id);
         $clientes = Cliente::all();
         $productos = Producto::all();
-        return view('pedidos.edit', compact('pedido', 'clientes', 'productos'));
+        $productosSeleccionados = $pedido->detalles->pluck('producto_id')->toArray();
+        $cantidades = $pedido->detalles->pluck('cantidad', 'producto_id')->toArray();
+
+        return view('pedidos.edit', compact('pedido', 'clientes', 'productos', 'productosSeleccionados', 'cantidades'));
     }
 
     public function update(Request $request, $id)
@@ -65,41 +72,59 @@ class PedidosController extends Controller
             'cliente_id' => 'required|exists:clientes,id',
             'fecha_pedido' => 'required|date',
             'productos' => 'array|required',
-            'cantidad' => 'array|required',
+            'cantidad' => 'required|array', // Asegura que 'cantidad' sea un array
         ]);
 
-        $pedido = Pedido::create([
-            'cliente_id' => $request->input('cliente_id'),
-            'fecha_pedido' => $request->input('fecha_pedido'),
-        ]);
+        try {
+            $pedido = Pedido::find($id);
 
-        $productosSeleccionados = $request->input('productos');
-        $cantidades = $request->input('cantidad');
+            if (!$pedido) {
+                return back()->with('error', 'Pedido no encontrado');
+            }
 
-        foreach ($productosSeleccionados as $productoId) {
-            DetallePedido::create([
-                'pedido_id' => $pedido->id,
-                'producto_id' => $productoId,
-                'cantidad' => $cantidades[$productoId],
+            $pedido->update([
+                'cliente_id' => $request->input('cliente_id'),
+                'fecha_pedido' => $request->input('fecha_pedido'),
             ]);
-        }
 
-        return redirect()->route('pedidos.index');
+            $productosSeleccionados = $request->input('productos');
+            $cantidades = $request->input('cantidad');
+
+            // Actualiza los detalles del pedido
+            foreach ($productosSeleccionados as $productoId) {
+                if (isset($cantidades[$productoId])) {
+                    $detalle = DetallePedido::where('pedido_id', $pedido->id)
+                        ->where('producto_id', $productoId)
+                        ->first();
+
+                    if ($detalle) {
+                        $detalle->update(['cantidad' => $cantidades[$productoId]]);
+                    }
+                }
+            }
+
+            return redirect()->route('pedidos.index')->with('success', 'Pedido actualizado exitosamente');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 
     public function destroy($id)
-    {
-        $pedido = Pedido::find($id);
+{
+    $pedido = Pedido::find($id);
     
-        if ($pedido) {
-            // Elimina los detalles del pedido
-            $pedido->DetallePedido()->delete();
+    if ($pedido) {
+        // Elimina los detalles del pedido
+        $pedido->detalles()->delete();
     
-            // Elimina el pedido
-            $pedido->delete();
-        }
-    
-        return redirect()->route('pedidos.index');
+        // Elimina el pedido
+        $pedido->delete();
+        
+        return redirect()->route('pedidos.index')->with('success', 'Pedido y detalles eliminados exitosamente');
     }
     
+    return redirect()->route('pedidos.index')->with('error', 'Pedido no encontrado');
 }
+
+}
+

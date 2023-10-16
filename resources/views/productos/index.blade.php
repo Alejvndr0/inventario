@@ -23,7 +23,7 @@
                         <td>{{ $producto->descripcion }}</td>
                         <td>{{ $producto->precio }}</td>
                         <td>
-                            @foreach ($producto->stockEnAlmacen as $stock)
+                            @foreach ($producto->stocks as $stock)
                                 {{ $stock->almacen->nombre }}: {{ $stock->cantidad }}<br>
                             @endforeach
                         </td>
