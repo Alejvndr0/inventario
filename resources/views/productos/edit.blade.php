@@ -29,7 +29,7 @@
                 <input type="text" id="precio" name="precio" class="form-control" value="{{ $producto->precio }}" required>
             </div>
             <div class="form-group">
-                <label for="almacenes">Selecciona almacen:</label>
+                <label for="almacenes">Selecciona almacenes:</label>
                 <select name="almacenes[]" id="almacenes" class="form-control" multiple required>
                     @foreach ($almacenes as $almacen)
                         @php
@@ -41,7 +41,7 @@
             </div>
             @foreach ($almacenes as $almacen)
                 <div class="form-group">
-                    <label for="cantidad_{{ $almacen->id }}">Cantidad del producto {{ $almacen->nombre }}</label>
+                    <label for="cantidad_{{ $almacen->id }}">Cantidad en {{ $almacen->nombre }}</label>
                     <input type="number" id="cantidad_{{ $almacen->id }}" name="cantidad[{{ $almacen->id }}]" class="form-control" value="{{ is_array($producto->stocks) ? $producto->stocks->where('almacen_id', $almacen->id)->first()->cantidad : 0 }}">
                 </div>
             @endforeach
