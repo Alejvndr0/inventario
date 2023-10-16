@@ -15,11 +15,11 @@ class StockEnAlmacen extends Model
     // Define las relaciones con los modelos Producto y Almacen
     public function producto()
     {
-        return $this->belongsTo(Producto::class);
+        return $this->belongsTo(Producto::class,'producto_id');
     }
 
     public function almacen()
     {
-        return $this->belongsTo(Almacen::class);
+        return $this->belongsTo(Almacen::class,'almacen_id');
     }
 }

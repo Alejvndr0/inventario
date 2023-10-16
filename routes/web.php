@@ -31,3 +31,4 @@ Route::resource('clientes', ClientesController::class);
 Route::resource('pedidos',pedidosController::class);
 
 
+

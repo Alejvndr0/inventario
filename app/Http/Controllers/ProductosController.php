@@ -45,7 +45,7 @@ class ProductosController extends Controller
 
     public function edit($id)
     {
-        $producto = Producto::with('stockEnAlmacen')->find($id);
+        $producto = Producto::find($id);
         $almacenes = Almacen::all();
         return view('productos.edit', compact('producto', 'almacenes'));
     }
@@ -57,17 +57,25 @@ class ProductosController extends Controller
         'descripcion' => 'required|string',
         'precio' => 'required|numeric',
         'almacenes' => 'array|required',
+        'cantidad' => 'array|required',
     ]);
 
-    $producto = Producto::create($request->except('almacenes'));
+    $producto = Producto::create([
+        'nombre' => $request->input('nombre'),
+        'descripcion' => $request->input('descripcion'),
+        'precio'=> $request->input('precio'),
+    ]);
 
-    foreach ($request->almacenes as $almacenId) {
-        StockEnAlmacen::create([
-            'producto_id' => $producto->id,
-            'almacen_id' => $almacenId,
-            'cantidad' => $request->input('cantidad_' . $almacenId),
-        ]);
-    }
+    $almacenesSeleccionados = $request->input('almacenes');
+        $cantidades = $request->input('cantidad');
+
+        foreach ($almacenesSeleccionados as $almacenId) {
+            StockEnAlmacen::create([
+                'producto_id' => $producto->id,
+                'almacen_id' => $almacenId,
+                'cantidad' => $cantidades[$almacenId],
+            ]);
+        }
 
     return redirect()->route('productos.index');
 }
@@ -78,7 +86,7 @@ class ProductosController extends Controller
 
         if ($producto) {
             // Elimina los detalles del stock en almacén
-            $producto->stockEnAlmacen()->delete();
+            $producto->stocks()->delete();
 
             // Elimina el producto
             $producto->delete();
