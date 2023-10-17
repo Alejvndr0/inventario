@@ -1,30 +1,37 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+
+    .nav-pills li a:hover {
+        color: black !important; 
+        background-color: white; 
+    }
+</style>
 <div class="container-fluid">
     <div class="row flex-nowrap">
-        <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
-            <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
-                <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+        <div class="bg-dark col-auto col-md-4 col-lg-3 min-vh-100">
+            <div class="bg-dark p-2">
+                <a href="/" class="d-flex align-items-center mt-1 text-white text-decoration-none">
                     <span class="fs-5 d-none d-sm-inline">Menu</span>
                 </a>
-                <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+                <ul class="nav nav-pills flex-column mt-4" id="menu">
                     <li class="nav-item">
-                        <a href="{{ route('almacenes.index') }}" class="btn btn-primary">almacenes</a>
+                        <a href="{{ route('almacenes.index') }}" class="nav-link text-white"><span class="fs-5 d-none d-sm-inline">Almacenes</span></a>
                     
                     </li>
                     <br>
-                    <li>
-                        <a href="{{ route('clientes.index') }}" class="btn btn-primary">clientes</a>
+                    <li class="nav-item">
+                        <a href="{{ route('clientes.index') }}" class="nav-link text-white"><span class="fs-5 d-none d-sm-inline">Clientes</span></a>
                     
                     </li>
                     <br>
-                    <li>
-                        <a href="{{ route('productos.index') }}" class="btn btn-primary">productos</a>
+                    <li class="nav-item">
+                        <a href="{{ route('productos.index') }}" class="nav-link text-white"><span class="fs-5 d-none d-sm-inline">Productos</span></a>
                     </li>
                     <br>
-                    <li>
-                        <a href="{{ route('pedidos.index') }}" class="btn btn-primary">pedidos</a>
+                    <li class="nav-item">
+                        <a href="{{ route('pedidos.index') }}" class="nav-link text-white"><span class="fs-5 d-none d-sm-inline">Pedidos</span></a>
                     </li>
                     
                 </ul>
@@ -33,6 +40,7 @@
         </div>
     </div>
 </div>
+
 
 
 @endsection

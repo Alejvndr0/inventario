@@ -54,6 +54,23 @@
                         </div>
 
                         <div class="row mb-3">
+                            <label for="rol_id" class="col-md-4 col-form-label text-md-end">{{ __('Rol') }}</label>
+
+                            <div class="col-md-6">
+                                <select id="rol_id" class="form-control @error('rol_id') is-invalid @enderror" name="rol_id" required>
+                                    <option value="">Select a Rol</option>
+                                    <option value="1">Administrador</option>
+                                    <option value="2">Usuario</option>
+                                </select>
+                                @error('rol_id')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
                             <label for="password-confirm" class="col-md-4 col-form-label text-md-end">{{ __('Confirm Password') }}</label>
 
                             <div class="col-md-6">
