@@ -1,8 +1,10 @@
-@extends('layouts.app')
+@extends('layouts.crud')
 
 @section('content')
     <div class="container">
+        <br>
         <h1>Agregar Cliente</h1>
+        <br>
         <form method="POST" action="{{ route('clientes.store') }}">
             @csrf
             <div class="form-group">
@@ -21,14 +23,17 @@
                 <label for="longitud">Longitud</label>
                 <input type="text" id="longitud" name="longitud" class="form-control" required>
             </div>
+            <br>
             <div id="map" style="height: 400px;"></div>
+            <br>
+            <a href="{{ route('clientes.index') }}" class="btn btn-primary">volver</a>
             <button type="submit" class="btn btn-primary">Agregar cliente</button>
         </form>
+        <br>
     </div>
 
     <script>
-        
-        var map = L.map('map').setView([-17.3895, -66.1568], 13); 
+        var map = L.map('map').setView([-17.3895, -66.1568], 13);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

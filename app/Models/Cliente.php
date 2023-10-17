@@ -9,10 +9,10 @@ class Cliente extends Model
 {
     use HasFactory;
     protected $table = 'clientes';
-    protected $guarded =[];
+    protected $guarded = [];
 
     public function pedidos()
     {
-        return $this->hasMany(Pedido::class,'pedido_id');
+        return $this->hasMany(Pedido::class, 'pedido_id');
     }
 }

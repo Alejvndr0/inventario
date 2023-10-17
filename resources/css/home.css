@@ -1,0 +1,47 @@
+
+#sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #064380;
+    padding-top: 20px;
+}
+
+#sidebar .nav-link {
+    color: #ffffff;
+    font-size: 20px;
+    font-family: cursive;
+}
+
+#sidebar .nav-link:hover {
+    background-color: #2c5575;
+}
+
+#content {
+    margin-left: 250px;
+    margin-bottom: -30px;
+    
+    
+}
+
+h3 {
+    color: #ffffff;
+    font-size: 40px;
+}
+
+#navbarDropdown{
+    font-size: 18px;
+    color: #ffffff;
+}
+
+.mt-5{
+    font-size: 50px;
+}
+
+#prueba{
+    margin-left: 250px;
+    
+
+}

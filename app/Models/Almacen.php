@@ -13,8 +13,7 @@ class Almacen extends Model
 
     // Relación con la tabla intermedia Stock (almacenes tienen muchos stocks)
     public function stocks()
-{
-    return $this->hasMany(StockEnAlmacen::class, 'almacen_id');
-}
-
+    {
+        return $this->hasMany(StockEnAlmacen::class, 'almacen_id');
+    }
 }
