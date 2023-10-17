@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('clientes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->default(0)->nullable();
             $table->string('nombre');
             $table->text('direccion');
             $table->point('ubicacion_geografica')->nullable();

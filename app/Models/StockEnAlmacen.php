@@ -12,14 +12,13 @@ class StockEnAlmacen extends Model
 
     protected $fillable = ['producto_id', 'almacen_id', 'cantidad'];
 
-    // Define las relaciones con los modelos Producto y Almacen
     public function producto()
     {
-        return $this->belongsTo(Producto::class,'producto_id');
+        return $this->belongsTo(Producto::class, 'producto_id');
     }
 
     public function almacen()
     {
-        return $this->belongsTo(Almacen::class,'almacen_id');
+        return $this->belongsTo(Almacen::class, 'almacen_id');
     }
 }

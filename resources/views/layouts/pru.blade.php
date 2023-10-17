@@ -1,28 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tu título aquí</title>
-    <!-- Agrega los enlaces a los archivos CSS de Leaflet -->
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-      integrity="sha384-7ik9qqx7w5dtaG5qIbtb5lWhefcyGOGC5j3S8p3+z/7MG8ORkTtoF9b5eRYZtTUNJ"
-      crossorigin=""
-    />
-
-    <!-- Agrega los enlaces a los archivos JS de Leaflet -->
-    <script
-      src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-      integrity="sha384-k2p5ad9g35p+R2P5Op4FqFjcJ6pajs/rfdfs3SO+kF5mPIez2im+8U5C6Zyk5ahd7"
-      crossorigin=""
-    ></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  @vite(['resources/sass/app.scss', 'resources/js/app.js','resources/css/home.css'])
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <style>
+       
+    </style>
 </head>
 <body>
-    @yield('content')
-
-    <!-- Agrega el código para inicializar el mapa Leaflet en tus vistas -->
-    @yield('scripts')
+  <div id="content">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto"> 
+                <li class="nav-item dropdown">
+                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                        {{ Auth::user()->name }}
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown"> <!-- Añadimos dropdown-menu-end -->
+                        <a class="dropdown-item" href="#">Editar Perfil</a>
+                        <a class="dropdown-item" href="#">agregar nuevo usuario</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{{ route('logout') }}"
+                            onclick="event.preventDefault();
+                                        document.getElementById('logout-form').submit();">
+                            {{ __('salir') }}
+                        </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                            @csrf
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+<div id="prueba">
+    <h1 class="mt-5">Bienvenido {{ Auth::user()->name }}</h1>
+    <br>
+  @yield('content')
 </body>
 </html>

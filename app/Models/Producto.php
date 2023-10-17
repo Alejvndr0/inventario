@@ -16,8 +16,8 @@ class Producto extends Model
     {
         return $this->hasMany(StockEnAlmacen::class, 'producto_id');
     }
-    public function detalles(){
+    public function detalles()
+    {
         return $this->hasMany(DetallePedidoo::class, 'producto_id');
     }
-
 }
