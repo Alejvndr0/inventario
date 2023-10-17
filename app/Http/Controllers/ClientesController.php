@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cliente;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ClientesController extends Controller
@@ -33,17 +34,19 @@ class ClientesController extends Controller
      */
     public function store(Request $request)
     {
+        $user = Auth::user();
         $cliente = new Cliente();
-    $cliente->nombre = $request->input('nombre');
-    $cliente->direccion = $request->input('direccion');
-    $latitud = $request->input('latitud');
-    $longitud = $request->input('longitud');
-    $ubicacion_geografica = "POINT($latitud $longitud)";
+        $cliente->nombre = $request->input('nombre');
+        $cliente->direccion = $request->input('direccion');
+        $latitud = $request->input('latitud');
+        $longitud = $request->input('longitud');
+        $cliente->user_id = $user->id;
+        $ubicacion_geografica = "POINT($latitud $longitud)";
 
-    $cliente->ubicacion_geografica = DB::raw("ST_GeomFromText('$ubicacion_geografica')");
-    $cliente->save();
+        $cliente->ubicacion_geografica = DB::raw("ST_GeomFromText('$ubicacion_geografica')");
+        $cliente->save();
 
-    return redirect()->route('clientes.index');
+        return redirect()->route('clientes.index');
     }
 
     /**

@@ -31,7 +31,7 @@
                     </li>
                     <br>
                     <li class="nav-item">
-                        <a href="{{ route('pedidos.index') }}" class="nav-link text-white"><span class="fs-5 d-none d-sm-inline">Pedidos</span></a>
+                        <a href="{{ route('envios.index') }}" class="nav-link text-white"><span class="fs-5 d-none d-sm-inline">Envios</span></a>
                     </li>
                     
                 </ul>

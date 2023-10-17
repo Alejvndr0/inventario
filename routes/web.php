@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AlmacenesController;
 use App\Http\Controllers\ProductosController;
 use App\Http\Controllers\ClientesController;
-use App\Http\Controllers\PedidosController;
+use App\Http\Controllers\EnviosController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +28,6 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::resource('almacenes',AlmacenesController::class);
 Route::resource('productos',ProductosController::class);
 Route::resource('clientes', ClientesController::class);
-Route::resource('pedidos',pedidosController::class);
+Route::resource('envios',EnviosController::class);
 
 
