@@ -1,10 +1,14 @@
-@extends('layouts.app')
+@extends('layouts.crud')
 
 @section('content')
     <div class="container">
-        <h1>Lista de Almacenes</h1>
+        <br>
+        <h1>ALMACENES</h1>
+        <br>
+        <a href="{{ route('home') }}" class="btn btn-primary">inicio</a>
         <a href="{{ route('almacenes.create') }}" class="btn btn-primary">Agregar Almacén</a>
-        <div id="map" style="height: 400px;"></div>
+        <br>
+        <br>
         <table class="table">
             <thead>
                 <tr>
@@ -24,22 +28,28 @@
                         <td>{{ $almacen->ubicacion_texto }}</td>
                         <td>
                             <a href="{{ route('almacenes.edit', $almacen->id) }}" class="btn btn-warning">Editar</a>
-                            
+
                             <!-- Agregar botón para eliminar -->
-                            <form action="{{ route('almacenes.destroy', $almacen->id) }}" method="POST" style="display: inline;">
+                            <form action="{{ route('almacenes.destroy', $almacen->id) }}" method="POST"
+                                style="display: inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este almacén?')">Eliminar</button>
+                                <button type="submit" class="btn btn-danger"
+                                    onclick="return confirm('¿Estás seguro de que deseas eliminar este almacén?')">Eliminar</button>
                             </form>
                         </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
+        <br>
+        <div id="map" style="height: 400px;"></div>
+        <br>
     </div>
 
+
     <script>
-        var map = L.map('map').setView([0, 0], 13); 
+        var map = L.map('map').setView([-17.3895, -66.1568], 13);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

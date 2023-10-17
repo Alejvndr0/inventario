@@ -9,15 +9,15 @@ class Pedido extends Model
 {
     use HasFactory;
     protected $table = 'pedidos';
-    protected $guarded =[];
+    protected $guarded = [];
 
     public function cliente()
     {
-        return $this->belongsTo(Cliente::class);
+        return $this->belongsTo(Cliente::class, 'cliente_id');
     }
 
-    public function DetallePedido(){
+    public function detalles()
+    {
         return $this->hasMany(DetallePedido::class, 'pedido_id');
     }
-
 }

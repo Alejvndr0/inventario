@@ -1,7 +1,8 @@
-@extends('layouts.app')
+@extends('layouts.crud')
 
 @section('content')
     <div class="container">
+        <br>
         <h1>Editar Producto</h1>
         @if (session('error'))
             <div class="alert alert-danger">
@@ -18,7 +19,8 @@
             @method('PUT')
             <div class="form-group">
                 <label for="nombre">Nombre del Producto</label>
-                <input type="text" id="nombre" name="nombre" class="form-control" value="{{ $producto->nombre }}" required>
+                <input type="text" id="nombre" name="nombre" class="form-control" value="{{ $producto->nombre }}"
+                    required>
             </div>
             <div class="form-group">
                 <label for="descripcion">Descripción</label>
@@ -26,22 +28,33 @@
             </div>
             <div class="form-group">
                 <label for="precio">Precio</label>
-                <input type="text" id="precio" name="precio" class="form-control" value="{{ $producto->precio }}" required>
+                <input type="text" id="precio" name="precio" class="form-control" value="{{ $producto->precio }}"
+                    required>
+            </div>
+            <div class="form-group">
+                <label for="almacenes">Selecciona almacenes:</label>
+                <select name="almacenes[]" id="almacenes" class="form-control" multiple required>
+                    @foreach ($almacenes as $almacen)
+                        @php
+                            $selected = is_array($producto->stocks) ? in_array($almacen->id, $producto->stocks->pluck('almacen_id')->toArray()) : false;
+                        @endphp
+                        <option value="{{ $almacen->id }}" @if ($selected) selected @endif>
+                            {{ $almacen->nombre }}</option>
+                    @endforeach
+                </select>
             </div>
             @foreach ($almacenes as $almacen)
                 <div class="form-group">
-                    <label for="cantidad_{{ $almacen->id }}">Stock en {{ $almacen->nombre }}</label>
-                    @if ($producto->stockEnAlmacenes)
-                        @php
-                            $stockEnAlmacen = $producto->stockEnAlmacenes->where('almacen_id', $almacen->id)->first();
-                        @endphp
-                        <input type="number" id="cantidad_{{ $almacen->id }}" name="cantidad_{{ $almacen->id }}" class="form-control" value="{{ $stockEnAlmacen ? $stockEnAlmacen->cantidad : 0 }}">
-                    @else
-                        <input type="number" id="cantidad_{{ $almacen->id }}" name="cantidad_{{ $almacen->id }}" class="form-control" value="0">
-                    @endif
+                    <label for="cantidad_{{ $almacen->id }}">Cantidad en {{ $almacen->nombre }}</label>
+                    <input type="number" id="cantidad_{{ $almacen->id }}" name="cantidad[{{ $almacen->id }}]"
+                        class="form-control"
+                        value="{{ is_array($producto->stocks) ? $producto->stocks->where('almacen_id', $almacen->id)->first()->cantidad : 0 }}">
                 </div>
             @endforeach
+            <br>
+            <a href="{{ route('productos.index') }}" class="btn btn-primary">volver</a>
             <button type="submit" class="btn btn-primary">Actualizar Producto</button>
         </form>
+        <br>
     </div>
-</div>
+@endsection

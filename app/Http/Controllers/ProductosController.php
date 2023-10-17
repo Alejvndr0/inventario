@@ -45,32 +45,52 @@ class ProductosController extends Controller
 
     public function edit($id)
     {
-        $producto = Producto::with('stockEnAlmacen')->find($id);
+        $producto = Producto::find($id);
         $almacenes = Almacen::all();
-        return view('productos.edit', compact('producto', 'almacenes'));
+        $almacenesSeleccionados = is_array($producto->stocks) ? $producto->stocks->pluck('almacen_id')->toArray() : [];
+        $cantidades = is_array($producto->stocks) ? $producto->stocks->pluck('cantidad', 'almacen_id')->toArray() : [];
+
+        return view('productos.edit', compact('producto', 'almacenes', 'almacenesSeleccionados', 'cantidades'));
     }
 
     public function update(Request $request, $id)
-{
-    $request->validate([
-        'nombre' => 'required|string',
-        'descripcion' => 'required|string',
-        'precio' => 'required|numeric',
-        'almacenes' => 'array|required',
-    ]);
-
-    $producto = Producto::create($request->except('almacenes'));
-
-    foreach ($request->almacenes as $almacenId) {
-        StockEnAlmacen::create([
-            'producto_id' => $producto->id,
-            'almacen_id' => $almacenId,
-            'cantidad' => $request->input('cantidad_' . $almacenId),
+    {
+        $request->validate([
+            'nombre' => 'required|string',
+            'descripcion' => 'required|string',
+            'precio' => 'required|numeric',
+            'almacenes' => 'array|required',
+            'cantidad' => 'array|required',
         ]);
-    }
 
-    return redirect()->route('productos.index');
-}
+        $producto = Producto::find($id);
+
+        if (!$producto) {
+            return back()->with('error', 'Producto no encontrado');
+        }
+
+        $producto->update([
+            'nombre' => $request->input('nombre'),
+            'descripcion' => $request->input('descripcion'),
+            'precio' => $request->input('precio'),
+        ]);
+
+        $almacenesSeleccionados = $request->input('almacenes');
+        $cantidades = $request->input('cantidad');
+
+        // Actualiza los detalles del stock en almacén
+        StockEnAlmacen::where('producto_id', $producto->id)->delete();
+
+        foreach ($almacenesSeleccionados as $almacenId) {
+            StockEnAlmacen::create([
+                'producto_id' => $producto->id,
+                'almacen_id' => $almacenId,
+                'cantidad' => $cantidades[$almacenId],
+            ]);
+        }
+
+        return redirect()->route('productos.index')->with('success', 'Producto actualizado exitosamente');
+    }
 
     public function destroy($id)
     {
@@ -78,7 +98,7 @@ class ProductosController extends Controller
 
         if ($producto) {
             // Elimina los detalles del stock en almacén
-            $producto->stockEnAlmacen()->delete();
+            $producto->stocks()->delete();
 
             // Elimina el producto
             $producto->delete();

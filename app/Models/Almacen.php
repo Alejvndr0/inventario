@@ -12,9 +12,8 @@ class Almacen extends Model
     protected $fillable = ['nombre', 'direccion', 'ubicacion_geografica'];
 
     // Relación con la tabla intermedia Stock (almacenes tienen muchos stocks)
-    public function stockEnAlmacen()
-{
-    return $this->hasMany(StockEnAlmacen::class, 'almacen_id');
-}
-
+    public function stocks()
+    {
+        return $this->hasMany(StockEnAlmacen::class, 'almacen_id');
+    }
 }
