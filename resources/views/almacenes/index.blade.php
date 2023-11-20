@@ -37,6 +37,7 @@
                                 <button type="submit" class="btn btn-danger"
                                     onclick="return confirm('¿Estás seguro de que deseas eliminar este almacén?')">Eliminar</button>
                             </form>
+                            <a href="{{ url('almacenes/'.$almacen->id.'/productos') }}" class="btn btn-warning">Productos</a>
                         </td>
                     </tr>
                 @endforeach

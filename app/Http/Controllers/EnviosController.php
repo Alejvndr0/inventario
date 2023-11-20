@@ -16,15 +16,12 @@ class EnviosController extends Controller
     public function index()
     {
         //
-        $envios = Envio::with('almacen','cliente')->get();
-
-        foreach ($envios as $envio) {
-            $geojsonAlmacen = DB::select("SELECT ST_AsGeoJSON('" . $envio->almacen->ubicacion_geografica . "') as geojson")[0]->geojson;
-            $geojsonCliente = DB::select("SELECT ST_AsGeoJSON('" . $envio->cliente->ubicacion_geografica . "') as geojson")[0]->geojson;
-
-        }
-
-        return view('envios.index', compact('envios'));
+        $envios = Envio::with('almacen','cliente', 'almacen')->get();
+        $clienteUbicacion =  DB::select('SELECT ST_X(ST_AsText(ubicacion_geografica)) AS longitud, ST_Y(ST_AsText(ubicacion_geografica)) AS latitud FROM clientes');
+        $almacenUbicacion = DB::select('SELECT ST_X(ST_AsText(ubicacion_geografica)) AS longitud, ST_Y(ST_AsText(ubicacion_geografica)) AS latitud FROM almacenes');
+        //dd($clienteUbicacion, $almacenUbicacion);
+        return view('envios.index', compact('clienteUbicacion', 'almacenUbicacion', 'envios'));
+        
     }
 
     /**
@@ -46,6 +43,7 @@ class EnviosController extends Controller
             'fecha_entrega' => 'required|date',
             
         ]);
+
         $envio = new Envio([
             'cliente_id' => $request->input('cliente_id'),
             'almacen_id' => $request->input('almacen_id'),

@@ -16,4 +16,10 @@ class Almacen extends Model
     {
         return $this->hasMany(StockEnAlmacen::class, 'almacen_id');
     }
+    public function productos()
+    {
+        return $this->belongsToMany(Producto::class, 'stock_en_almacen', 'almacen_id', 'producto_id')
+            ->withPivot('cantidad')
+            ->withTimestamps();
+    }
 }
