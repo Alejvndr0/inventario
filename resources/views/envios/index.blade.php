@@ -38,44 +38,44 @@
     </div>
     
     <script>
-        var map = L.map('map').setView([-17.3895, -66.1568], 13); // Centra el mapa en el almacén del primer envío
+        var map = L.map('map').setView([-17.3895, -66.1568], 13);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        @foreach ($envios as $envio)
-            // Coordenadas del almacén y el cliente para el envío actual
-            var almacenData = JSON.parse('{{ $envio->almacen }}');
-            var clienteData = JSON.parse('{{ $envio->cliente }}');
+        @foreach($envios as $envio)
+        var clienteUbicacion = L.latLng({{ $envio->cliente->ubicacion_geografica }});
+        var almacenUbicacion = L.latLng({{ $envio->almacen->ubicacion_geografica }});
 
-            var almacenLat = almacenData.coordinates[1];
-            var almacenLng = almacenData.coordinates[0];
 
-            var clienteLat = clienteData.coordinates[1];
-            var clienteLng = clienteData.coordinates[0];
+            // Calcular coordenadas intermedias
+            var numPuntosIntermedios = 50;
+            var coordsIntermedias = [];
+            var lat1 = clienteUbicacion[0];
+            var lon1 = clienteUbicacion[1];
+            var lat2 = almacenUbicacion[0];
+            var lon2 = almacenUbicacion[1];
+            for (var i = 0; i < numPuntosIntermedios; i++) {
+                var f = i / (numPuntosIntermedios - 1);
+                var lat = lat1 + f * (lat2 - lat1);
+                var lon = lon1 + f * (lon2 - lon1);
+                coordsIntermedias.push([lat, lon]);
+            }
 
-            // Crea una línea entre el almacén y el cliente
-            var latlngs = [
-                [almacenLat, almacenLng],
-                [clienteLat, clienteLng]
-            ];
+            var ruta = L.polyline(coordsIntermedias, { color: 'blue' }).addTo(map);
 
-            var polyline = L.polyline(latlngs, { color: 'blue' }).addTo(map);
-
-            // Agrega marcadores para el almacén y el cliente
-            L.marker([almacenLat, almacenLng]).addTo(map).bindPopup('Almacén: {{ $envio->almacen->nombre }}');
-            L.marker([clienteLat, clienteLng]).addTo(map).bindPopup('Cliente: {{ $envio->cliente->nombre }}');
+            // Añadir marcadores para los puntos de inicio y final
+            L.marker(clienteUbicacion).addTo(map);
+            L.marker(almacenUbicacion).addTo(map);
         @endforeach
 
-        // Ajusta la vista del mapa para que muestre todas las rutas
-        var group = new L.featureGroup([
-            @foreach ($envios as $envio)
-                polyline{{ $envio->id }},
-            @endforeach
-        ]);
-        map.fitBounds(group.getBounds());
-        
+        var bounds = new L.LatLngBounds();
+        @foreach($envios as $envio)
+            bounds.extend(clienteUbicacion);
+            bounds.extend(almacenUbicacion);
+        @endforeach
+        map.fitBounds(bounds);
     </script>
+
 @endsection

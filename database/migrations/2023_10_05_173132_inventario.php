@@ -55,7 +55,7 @@ return new class extends Migration
             $table->unsignedBigInteger('cliente_id');
             $table->unsignedBigInteger('almacen_id');
             $table->date('fecha_entrega');
-            $table->lineString('distancia')->nullable();
+            $table->geometry('distancia')->nullable();
             $table->timestamps();
         
             $table->foreign('cliente_id')->references('id')->on('clientes')->onDelete('cascade');

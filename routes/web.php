@@ -5,6 +5,7 @@ use App\Http\Controllers\AlmacenesController;
 use App\Http\Controllers\ProductosController;
 use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\EnviosController;
+use App\Http\Controllers\AlmacenProductoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,7 @@ Route::resource('almacenes',AlmacenesController::class);
 Route::resource('productos',ProductosController::class);
 Route::resource('clientes', ClientesController::class);
 Route::resource('envios',EnviosController::class);
+Route::resource('almacenes.productos', AlmacenProductoController::class);
 
 
 
