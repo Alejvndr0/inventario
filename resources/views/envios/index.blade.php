@@ -27,19 +27,6 @@
                         <td>
                             <!-- Mapa con ruta -->
                             <div id="map-{{ $envio->id }}" style="height: 100px;"></div>
-
-                            <!-- Script para mostrar la ruta en el mapa -->
-                            <script>
-                                var map{{ $envio->id }} = L.map('map-{{ $envio->id }}').setView([-17.3895, -66.1568], 13);
-
-                                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                }).addTo(map{{ $envio->id }});
-
-                                var coordinates{{ $envio->id }} = {!! json_encode($envio->rutaCoordinates()) !!};
-
-                                L.polyline(coordinates{{ $envio->id }}).addTo(map{{ $envio->id }});
-                            </script>
                         </td>
                         <td>
                             <a href="{{ route('envios.edit', $envio->id) }}" class="btn btn-warning">Editar</a>
@@ -52,6 +39,35 @@
                     </tr>
                 @endforeach
             </tbody>
+            <div id="map" style="height: 600px;"></div>
         </table>
     </div>
+    
+<script>
+    var map = L.map('map').setView([-17.3895, -66.1568], 13 );
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    @foreach ($envios as $envio)
+        var lat_cli = {{ $envio->cliente->latitud }};
+        var lng_cli = {{ $envio->cliente->longitud }};
+        var lat_alm = {{ $envio->almacen->latitud }};
+        var lng_alm = {{ $envio->almacen->longitud }};
+        var randomColor = '#' + Math.floor(Math.random()*16777215).toString(16);
+        L.Routing.control({
+            waypoints:[
+                L.latLng(lat_cli, lng_cli),
+                L.latLng(lat_alm, lng_alm)
+            ],
+            routeWhileDragging: false, // Deshabilitar el enrutamiento mientras se arrastra
+            draggableWaypoints: false, // Deshabilitar la capacidad de arrastrar puntos de ruta
+            addWaypoints: false, // Deshabilitar la capacidad de agregar nuevos puntos de ruta
+            lineOptions: {
+                styles: [{color: randomColor, opacity: 1, weight: 6}]
+            },
+            show: false // Ocultar el control de enrutamiento
+        }).addTo(map);
+    @endforeach
+</script>
 @endsection

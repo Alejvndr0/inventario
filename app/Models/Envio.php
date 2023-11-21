@@ -29,20 +29,4 @@ class Envio extends Model
         return $this->belongsTo(Almacen::class, 'almacen_id');
     }
 
-    public function rutaCoordinates()
-    {
-        $coordinates = [];
-
-        if ($this->ruta) {
-            $wkt = DB::select(DB::raw("SELECT ST_AsText('" . $this->ruta . "') as wkt"))[0]->wkt;
-            preg_match_all('/\((.*?)\)/', $wkt, $matches);
-
-            foreach (explode(',', $matches[1][0]) as $point) {
-                list($lat, $lng) = explode(' ', $point);
-                $coordinates[] = [$lat, $lng];
-            }
-        }
-
-        return $coordinates;
-    }
 }
