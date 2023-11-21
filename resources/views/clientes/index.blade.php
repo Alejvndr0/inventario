@@ -5,8 +5,8 @@
         <br>
         <h1>Lista de clientes</h1>
         <br>
-        <a href="{{ route('home') }}" class="btn btn-primary">inicio</a>
-        <a href="{{ route('clientes.create') }}" class="btn btn-primary">Agregar clientes</a>
+        <a href="{{ route('home') }}" class="btn btn-primary">Inicio</a>
+        <a href="{{ route('clientes.create') }}" class="btn btn-primary">Agregar cliente</a>
         <br>
         <br>
         <table class="table">
@@ -15,7 +15,8 @@
                     <th>ID</th>
                     <th>Nombre</th>
                     <th>Dirección</th>
-                    <th>Ubicación Geográfica</th>
+                    <th>Latitud</th>
+                    <th>Longitud</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -25,7 +26,8 @@
                         <td>{{ $cliente->id }}</td>
                         <td>{{ $cliente->nombre }}</td>
                         <td>{{ $cliente->direccion }}</td>
-                        <td>{{ $cliente->ubicacion_texto }}</td>
+                        <td>{{ $cliente->latitud }}</td>
+                        <td>{{ $cliente->longitud }}</td>
                         <td>
                             <a href="{{ route('clientes.edit', $cliente->id) }}" class="btn btn-warning">Editar</a>
 
@@ -55,15 +57,11 @@
         }).addTo(map);
 
         @foreach ($clientes as $cliente)
-            var ubicacionText = "{{ $cliente->ubicacion_texto }}";
-            var latLngArray = ubicacionText.match(/[\d.-]+/g);
-            if (latLngArray.length === 2) {
-                var lat = parseFloat(latLngArray[0]);
-                var lng = parseFloat(latLngArray[1]);
-                L.marker([lat, lng]).addTo(map)
-                    .bindPopup("Nombre: {{ $cliente->nombre }}<br>Dirección: {{ $cliente->direccion }}")
-                    .openPopup();
-            }
+            var lat = {{ $cliente->latitud }};
+            var lng = {{ $cliente->longitud }};
+            L.marker([lat, lng]).addTo(map)
+                .bindPopup("Nombre: {{ $cliente->nombre }}<br>Dirección: {{ $cliente->direccion }}")
+                .openPopup();
         @endforeach
     </script>
 @endsection

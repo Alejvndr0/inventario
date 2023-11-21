@@ -6,6 +6,7 @@ use App\Http\Controllers\ProductosController;
 use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\EnviosController;
 use App\Http\Controllers\AlmacenProductoController;
+use App\Http\Controllers\RutasController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,4 +34,6 @@ Route::resource('envios',EnviosController::class);
 Route::resource('almacenes.productos', AlmacenProductoController::class);
 
 
-
+// En web.php
+Route::get('/seleccionar-rutas', [RutasController::class, 'seleccionarRutas']);
+Route::post('/calcular-rutas', [RutasController::class, 'calcularRutaOpenRouteService']);

@@ -26,7 +26,7 @@
             <br>
             <div id="map" style="height: 400px;"></div>
             <br>
-            <a href="{{ route('clientes.index') }}" class="btn btn-primary">volver</a>
+            <a href="{{ route('clientes.index') }}" class="btn btn-primary">Volver</a>
             <button type="submit" class="btn btn-primary">Agregar cliente</button>
         </form>
         <br>

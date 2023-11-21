@@ -26,12 +26,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $almacenes = DB::table('almacenes')
-        ->select('id', 'nombre', 'direccion', DB::raw("ST_AsText(ubicacion_geografica) as ubicacion_texto"))
-        ->get();
-        $clientes = DB::table('clientes')
-            ->select('id', 'nombre', 'direccion', DB::raw("ST_AsText(ubicacion_geografica) as ubicacion_texto"))
-            ->get();
+        $clientes = Cliente::all();
+        $almacenes= Almacen::all();
         return view('home',compact('almacenes','clientes'));
     }
 }
