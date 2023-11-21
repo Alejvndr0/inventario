@@ -2,91 +2,93 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use App\Models\Envio;
 use App\Models\Almacen;
 use App\Models\Cliente;
-use App\Models\Envio;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class EnviosController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
-        $envios = Envio::with('almacen','cliente', 'almacen')->get();
-        $clienteUbicacion =  DB::select('SELECT ST_X(ST_AsText(ubicacion_geografica)) AS longitud, ST_Y(ST_AsText(ubicacion_geografica)) AS latitud FROM clientes');
-        $almacenUbicacion = DB::select('SELECT ST_X(ST_AsText(ubicacion_geografica)) AS longitud, ST_Y(ST_AsText(ubicacion_geografica)) AS latitud FROM almacenes');
-        //dd($clienteUbicacion, $almacenUbicacion);
-        return view('envios.index', compact('clienteUbicacion', 'almacenUbicacion', 'envios'));
-        
+        $envios = Envio::with('cliente', 'almacen')->get();
+
+        return view('envios.index', compact('envios'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        $envios= Envio::all();
         $clientes = Cliente::all();
         $almacenes = Almacen::all();
-        return view('envios.create', compact('clientes', 'almacenes', 'envios'));
+
+        return view('envios.create', compact('clientes', 'almacenes'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'cliente_id' => 'required|exists:clientes,id',
-            'almacen_id' => 'required|exists:almacenes,id',
-            'fecha_entrega' => 'required|date',
-            
-        ]);
+        $envio = new Envio();
+        $envio->cliente_id = $request->input('cliente_id');
+        $envio->almacen_id = $request->input('almacen_id');
+        $envio->fecha_entrega = $request->input('fecha_entrega');
 
-        $envio = new Envio([
-            'cliente_id' => $request->input('cliente_id'),
-            'almacen_id' => $request->input('almacen_id'),
-            'fecha_entrega' => $request->input('fecha_entrega'),
-        ]);
+        // Convert coordinates to LINESTRING format
+        $latitudCliente = $request->input('latitud_cliente');
+        $longitudCliente = $request->input('longitud_cliente');
+        $latitudAlmacen = $request->input('latitud_almacen');
+        $longitudAlmacen = $request->input('longitud_almacen');
+
+        $routeCoordinates = [
+            "$latitudCliente $longitudCliente",
+            "$latitudAlmacen $longitudAlmacen"
+        ];
+
+        $envio->ruta = DB::raw("ST_GeomFromText('LINESTRING(" . implode(',', $routeCoordinates) . ")')");
 
         $envio->save();
-
-        // Redirecciona a la vista de detalle del envío recién creado
 
         return redirect()->route('envios.index');
     }
 
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit($id)
     {
-        //
+        $envio = Envio::with('cliente', 'almacen')->find($id);
+        $clientes = Cliente::all();
+        $almacenes = Almacen::all();
+
+        return view('envios.edit', compact('envio', 'clientes', 'almacenes'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $envio = Envio::find($id);
+        $envio->cliente_id = $request->input('cliente_id');
+        $envio->almacen_id = $request->input('almacen_id');
+        $envio->fecha_entrega = $request->input('fecha_entrega');
+
+        // Convert coordinates to LINESTRING format
+        $latitudCliente = $request->input('latitud_cliente');
+        $longitudCliente = $request->input('longitud_cliente');
+        $latitudAlmacen = $request->input('latitud_almacen');
+        $longitudAlmacen = $request->input('longitud_almacen');
+
+        $routeCoordinates = [
+            "$latitudCliente $longitudCliente",
+            "$latitudAlmacen $longitudAlmacen"
+        ];
+
+        $envio->ruta = DB::raw("ST_GeomFromText('LINESTRING(" . implode(',', $routeCoordinates) . ")')");
+
+        $envio->save();
+
+        return redirect()->route('envios.index');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy($id)
     {
-        //
-    }
+        $envio = Envio::find($id);
+        $envio->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()->route('envios.index');
     }
 }

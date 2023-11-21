@@ -38,26 +38,18 @@
         }).addTo(map);
 
         @foreach ($almacenes as $almacen)
-            var ubicacionText = "{{ $almacen->ubicacion_texto }}";
-            var latLngArray = ubicacionText.match(/[\d.-]+/g);
-            if (latLngArray.length === 2) {
-                var lat = parseFloat(latLngArray[0]);
-                var lng = parseFloat(latLngArray[1]);
-                L.marker([lat, lng]).addTo(map)
-                    .bindPopup("Nombre del almacen: {{ $almacen->nombre }}<br>Dirección: {{ $almacen->direccion }}")
-                    .openPopup();
-            }
+            var lat = {{ $almacen->latitud }};
+            var lng = {{ $almacen->longitud }};
+            L.marker([lat, lng]).addTo(map)
+                .bindPopup("Nombre: {{ $almacen->nombre }}<br>Dirección: {{ $almacen->direccion }}")
+                .openPopup();
         @endforeach
         @foreach ($clientes as $cliente)
-            var ubicacionText = "{{ $cliente->ubicacion_texto }}";
-            var latLngArray = ubicacionText.match(/[\d.-]+/g);
-            if (latLngArray.length === 2) {
-                var lat = parseFloat(latLngArray[0]);
-                var lng = parseFloat(latLngArray[1]);
-                L.marker([lat, lng]).addTo(map)
-                    .bindPopup("Nombre del cliente: {{ $cliente->nombre }}<br>Dirección: {{ $cliente->direccion }}")
-                    .openPopup();
-            }
+            var lat = {{ $cliente->latitud }};
+            var lng = {{ $cliente->longitud }};
+            L.marker([lat, lng]).addTo(map)
+                .bindPopup("Nombre: {{ $cliente->nombre }}<br>Dirección: {{ $cliente->direccion }}")
+                .openPopup();
         @endforeach
     </script>
 @endsection

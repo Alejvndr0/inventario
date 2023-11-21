@@ -4,10 +4,9 @@
     <div class="container">
         <br>
         <h1>Editar Almacén</h1>
-        <br>
         <form method="POST" action="{{ route('almacenes.update', $almacen->id) }}">
             @csrf
-            @method('PUT') <!-- Usa el método PUT para actualizar el recurso -->
+            @method('PUT')
 
             <div class="form-group">
                 <label for="nombre">Nombre del Almacén</label>
@@ -19,34 +18,32 @@
             </div>
             <div class="form-group">
                 <label for="latitud">Latitud</label>
-                <input type="text" id="latitud" name="latitud" class="form-control" value="{{ $latitud }}"
-                    required>
+                <input type="text" id="latitud" name="latitud" class="form-control" value="{{ $almacen->latitud }}" required>
             </div>
             <div class="form-group">
                 <label for="longitud">Longitud</label>
-                <input type="text" id="longitud" name="longitud" class="form-control" value="{{ $longitud }}"
-                    required>
+                <input type="text" id="longitud" name="longitud" class="form-control" value="{{ $almacen->longitud }}" required>
             </div>
             <br>
             <div id="map" style="height: 400px;"></div>
             <br>
-            <a href="{{ route('almacenes.index') }}" class="btn btn-primary">volver</a>
+            <a href="{{ route('almacenes.index') }}" class="btn btn-primary">Volver</a>
             <button type="submit" class="btn btn-primary">Actualizar Almacén</button>
         </form>
         <br>
     </div>
 
     <script>
-        console.log("Latitud inicial:", {{ $latitud }});
-        console.log("Longitud inicial:", {{ $longitud }});
+        console.log("Latitud inicial:", {{ $almacen->latitud }});
+        console.log("Longitud inicial:", {{ $almacen->longitud }});
 
-        var map = L.map('map').setView([{{ $latitud }}, {{ $longitud }}], 13);
+        var map = L.map('map').setView([{{ $almacen->latitud }}, {{ $almacen->longitud }}], 13);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        var marker = L.marker([{{ $latitud }}, {{ $longitud }}]).addTo(map);
+        var marker = L.marker([{{ $almacen->latitud }}, {{ $almacen->longitud }}]).addTo(map);
 
         map.on('click', function(e) {
             if (marker) {

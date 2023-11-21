@@ -5,6 +5,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+use function Laravel\Prompts\table;
+
 return new class extends Migration
 {
     /**
@@ -17,7 +19,8 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->default(0)->nullable();
             $table->string('nombre');
             $table->text('direccion');
-            $table->point('ubicacion_geografica')->nullable();
+            $table->double('latitud')->nullable();
+            $table->double('longitud')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
@@ -35,7 +38,8 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->text('direccion');
-            $table->point('ubicacion_geografica')->nullable();
+            $table->double('latitud')->nullable();
+            $table->double('longitud')->nullable();
             $table->timestamps();
         });
         
@@ -55,7 +59,7 @@ return new class extends Migration
             $table->unsignedBigInteger('cliente_id');
             $table->unsignedBigInteger('almacen_id');
             $table->date('fecha_entrega');
-            $table->geometry('distancia')->nullable();
+            $table->lineString('ruta')->nullable();
             $table->timestamps();
         
             $table->foreign('cliente_id')->references('id')->on('clientes')->onDelete('cascade');
