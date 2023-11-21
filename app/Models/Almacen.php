@@ -10,22 +10,15 @@ class Almacen extends Model
 {
     use HasFactory;
     protected $table = 'almacenes';
-    protected $fillable = ['nombre', 'direccion', 'ubicacion_geografica'];
+    protected $fillable = ['nombre', 'direccion', 'latitud', 'longitud'];
 
     // Relación con la tabla intermedia Stock (almacenes tienen muchos stocks)
     public function stocks()
     {
         return $this->hasMany(StockEnAlmacen::class, 'almacen_id');
     }
-    public function productos()
+    public function envios()
     {
-        return $this->belongsToMany(Producto::class, 'stock_en_almacen', 'almacen_id', 'producto_id')
-            ->withPivot('cantidad')
-            ->withTimestamps();
+        return $this->hasMany(Envio::class, 'almacen_id');
     }
-
-    public function getGeoJson()
-{
-    return DB::select("SELECT ST_AsGeoJSON('" . $this->ubicacion_geografica . "') as geojson")[0]->geojson;
-}
 }

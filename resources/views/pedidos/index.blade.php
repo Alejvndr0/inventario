@@ -39,4 +39,25 @@
             </tbody>
         </table>
     </div>
+    <div id="map" style="height: 400px;"></div>
+
+    <script>
+        var map = L.map('map').setView([-17.390780, -66.139417], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Aquí debes proporcionar las coordenadas geográficas del cliente y el almacén
+        var clienteCoords = [-17.391665, -66.141543];
+        var almacenCoords = [-17.389393236257227, -66.141051];
+
+        // Marcadores para el cliente y el almacén
+        L.marker(clienteCoords).addTo(map).bindPopup('Cliente');
+        L.marker(almacenCoords).addTo(map).bindPopup('Almacén');
+
+        // Línea de ruta entre el cliente y el almacén
+        var ruta = L.polyline([clienteCoords, almacenCoords], { color: 'red' });
+        ruta.addTo(map);
+    </script>
 @endsection

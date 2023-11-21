@@ -10,15 +10,11 @@ class Cliente extends Model
 {
     use HasFactory;
     protected $table = 'clientes';
-    protected $guarded = [];
+    protected $fillable = ['nombre', 'direccion', 'latitud', 'longitud'];
 
-    public function pedidos()
+    public function envios()
     {
-        return $this->hasMany(Pedido::class, 'pedido_id');
+        return $this->hasMany(Envio::class, 'envio_id');
     }
 
-    public function getGeoJson()
-{
-    return DB::select("SELECT ST_AsGeoJSON('" . $this->ubicacion_geografica . "') as geojson")[0]->geojson;
-}
 }

@@ -58,12 +58,14 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('cliente_id');
             $table->unsignedBigInteger('almacen_id');
+            $table->unsignedBigInteger('user_id');
             $table->date('fecha_entrega');
             $table->lineString('ruta')->nullable();
             $table->timestamps();
         
             $table->foreign('cliente_id')->references('id')->on('clientes')->onDelete('cascade');
             $table->foreign('almacen_id')->references('id')->on('almacenes')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
         
         Schema::create('envio_producto', function (Blueprint $table) {

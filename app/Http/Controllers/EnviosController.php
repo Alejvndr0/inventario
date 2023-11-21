@@ -31,20 +31,6 @@ class EnviosController extends Controller
         $envio->cliente_id = $request->input('cliente_id');
         $envio->almacen_id = $request->input('almacen_id');
         $envio->fecha_entrega = $request->input('fecha_entrega');
-
-        // Convert coordinates to LINESTRING format
-        $latitudCliente = $request->input('latitud_cliente');
-        $longitudCliente = $request->input('longitud_cliente');
-        $latitudAlmacen = $request->input('latitud_almacen');
-        $longitudAlmacen = $request->input('longitud_almacen');
-
-        $routeCoordinates = [
-            "$latitudCliente $longitudCliente",
-            "$latitudAlmacen $longitudAlmacen"
-        ];
-
-        $envio->ruta = DB::raw("ST_GeomFromText('LINESTRING(" . implode(',', $routeCoordinates) . ")')");
-
         $envio->save();
 
         return redirect()->route('envios.index');
@@ -61,27 +47,31 @@ class EnviosController extends Controller
 
     public function update(Request $request, $id)
     {
-        $envio = Envio::find($id);
+        $request->validate([
+            'cliente_id' => 'required',
+            'almacen_id' => 'required',
+            'fecha_entrega' => 'required|date',
+            'ruta' => 'required', // Asegúrate de validar la ruta según tus necesidades
+        ]);
+
+        // Obtener el envío que deseas actualizar
+        $envio = Envio::findOrFail($id);
+
+        // Actualizar los campos del envío
         $envio->cliente_id = $request->input('cliente_id');
         $envio->almacen_id = $request->input('almacen_id');
         $envio->fecha_entrega = $request->input('fecha_entrega');
 
-        // Convert coordinates to LINESTRING format
-        $latitudCliente = $request->input('latitud_cliente');
-        $longitudCliente = $request->input('longitud_cliente');
-        $latitudAlmacen = $request->input('latitud_almacen');
-        $longitudAlmacen = $request->input('longitud_almacen');
-
-        $routeCoordinates = [
-            "$latitudCliente $longitudCliente",
-            "$latitudAlmacen $longitudAlmacen"
-        ];
-
-        $envio->ruta = DB::raw("ST_GeomFromText('LINESTRING(" . implode(',', $routeCoordinates) . ")')");
-
+        // Almacenar la ruta en el formato adecuado (por ejemplo, WKT)
+        $ruta = $request->input('ruta');
+        // Guardar los cambios
+        $envio->ruta = DB::raw("ST_GeomFromText('LINESTRING($ruta)')");
         $envio->save();
 
-        return redirect()->route('envios.index');
+
+        // Resto de la lógica de redirección o respuesta
+
+        return redirect()->route('envios.index')->with('status', 'Envío actualizado correctamente');
     }
 
     public function destroy($id)
