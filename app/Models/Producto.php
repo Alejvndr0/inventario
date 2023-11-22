@@ -20,4 +20,13 @@ class Producto extends Model
     {
         return $this->hasMany(DetallePedidoo::class, 'producto_id');
     }
+    public function stockEnAlmacen()
+    {
+        return $this->hasMany(StockEnAlmacen::class);
+    }
+
+    public function envios()
+    {
+        return $this->belongsToMany(Envio::class, 'envio_producto')->withPivot('cantidad');
+    }
 }

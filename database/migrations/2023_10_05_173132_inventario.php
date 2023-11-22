@@ -16,20 +16,18 @@ return new class extends Migration
     {
         Schema::create('clientes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->default(0)->nullable();
             $table->string('nombre');
             $table->text('direccion');
             $table->double('latitud')->nullable();
             $table->double('longitud')->nullable();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
         });
 
         Schema::create('productos', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->text('descripcion');
+            $table->text('descripcion')->nullable();
             $table->decimal('precio', 10, 2);
             $table->timestamps();
         });
@@ -47,7 +45,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('producto_id');
             $table->unsignedBigInteger('almacen_id');
-            $table->integer('cantidad');
+            $table->integer('cantidad')->nullable();
             $table->timestamps();
         
             $table->foreign('producto_id')->references('id')->on('productos')->onDelete('cascade');
@@ -60,9 +58,9 @@ return new class extends Migration
             $table->unsignedBigInteger('almacen_id');
             $table->unsignedBigInteger('user_id');
             $table->date('fecha_entrega');
-            $table->lineString('ruta')->nullable();
+            $table->string('detalles')->nullable();
+            $table->string('estado')->nullable();
             $table->timestamps();
-        
             $table->foreign('cliente_id')->references('id')->on('clientes')->onDelete('cascade');
             $table->foreign('almacen_id')->references('id')->on('almacenes')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

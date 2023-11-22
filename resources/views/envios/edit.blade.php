@@ -25,27 +25,63 @@
                         @if(isset($envio))
                             @method('PUT')
                         @endif
+                        @csrf
+                        @if(isset($envio))
+                            <div class="form-group">
+                                <label for="estado">Estado:</label>
+                                <input type="text" name="estado" class="form-control">
+                                <select name="estado" class="form-control">
+                                    <option value="Pendiente">Pendiente</option>
+                                    <option value="En envio">En envio</option>
+                                    <option value="Entregado">Entregado</option>
+                                </select>
+                            </div>
+                        @else
+                            <input type="hidden" name="estado" value="Pendiente">
+                        @endif
+                        <div class="form-group">
+                            <label for="almacen_id">Almacén:</label>
+                            <select name="almacen_id" class="form-control">
+                                @foreach($almacenes as $almacen)
+                                    <option value="{{ $almacen->id }}">{{ $almacen->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="cliente_id">Cliente:</label>
+                            <select name="cliente_id" class="form-control">
+                                @foreach($clientes as $cliente)
+                                    <option value="{{ $cliente->id }}">{{ $cliente->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="user_id">Repartidor:</label>
+                            <select name="user_id" class="form-control">
+                                @foreach($usuarios as $usuario)
+                                    <option value="{{ $usuario->id }}">{{ $usuario->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="fecha_entrega">Fecha de entrega:</label>
+                            <input type="date" name="fecha_entrega" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="detalles">Detalles:</label>
+                            <textarea class="form-control" id="detalles" name="detalles" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="productos">Productos:</label>
+                            @foreach($productos as $producto)
+                                <div class="mb-3">
+                                    <label for="producto_{{ $producto->id }}">{{ $producto->nombre }}</label>
+                                    <input type="number" name="productos[{{ $producto->id }}][cantidad]" class="form-control" min="1">
+                                    <input type="hidden" name="productos[{{ $producto->id }}][id]" value="{{ $producto->id }}">
+                                </div>
+                            @endforeach
+                        </div>
                         
-                        <div class="form-group">
-                            <label for="cliente_id">Cliente</label>
-                            <select id="cliente_id" name="cliente_id" class="form-control" required>
-                                @foreach ($clientes as $cliente)
-                                    <option value="{{ $cliente->id }}" @if ($envio->cliente_id == $cliente->id) selected @endif>{{ $cliente->nombre }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="almacen_id">Almacén</label>
-                            <select id="almacen_id" name="almacen_id" class="form-control" required>
-                                @foreach ($almacenes as $almacen)
-                                    <option value="{{ $almacen->id }}" @if ($envio->almacen_id == $almacen->id) selected @endif>{{ $almacen->nombre }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="fecha_entrega">Fecha de Entrega</label>
-                            <input type="date" id="fecha_entrega" name="fecha_entrega" class="form-control" value="{{ $envio->fecha_entrega }}" required>
-                        </div>
                         @if (isset($envio))
                             <div id="map" style="height: 400px;"></div>
                             <input type="hidden" name="ruta" id="ruta" value="{{ $envio->ruta ?? '' }}">
@@ -69,55 +105,4 @@
         </div>
     </div>
 </div>
-<script>
-    var map = L.map('map').setView([-17.3895, -66.1568], 13 );
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-        var lat_cli = {{ $envio->cliente->latitud }};
-        var lng_cli = {{ $envio->cliente->longitud }};
-        var lat_alm = {{ $envio->almacen->latitud }};
-        var lng_alm = {{ $envio->almacen->longitud }};
-        var control = L.Routing.control({
-            waypoints: [
-            L.latLng(lat_cli, lng_cli),
-            L.latLng(lat_alm, lng_alm)
-            ],
-        }).addTo(map);
-        control.on('waypointschanged', function (e) {
-        // Obtener los waypoints actualizados y convertirlos a un formato para almacenar en el campo oculto
-        var ruta = e.waypoints.map(function(waypoint) {
-            return waypoint.latLng.lat + ' ' + waypoint.latLng.lng;
-        }).join(',');
-
-        // Actualizar el valor del campo oculto
-        console.log(ruta);
-        document.getElementById('ruta').value = ruta;
-    })
-        map.on('click', function (e) {
-    control.spliceWaypoints(control.getWaypoints().length - 1, 1, e.latlng);
-});
-
-map.on('contextmenu', function (e) {
-    // Obtén el índice del punto más cercano al lugar del clic derecho
-    var index = control.getWaypoints().reduce(function (acc, waypoint, i) {
-        var distance = e.latlng.distanceTo(waypoint.latLng);
-        return distance < acc.distance ? { index: i, distance: distance } : acc;
-    }, { index: -1, distance: Infinity }).index;
-
-    // Si se encontró un punto cercano, elimínalo
-    if (index !== -1) {
-        control.spliceWaypoints(index, 1);
-    }
-});
-            /*createMarker: function(i, waypoint, n) {
-                // Personaliza la apariencia de los marcadores intermedios si es necesario
-            }
-            
-        }).addTo(map);
-        control.getWaypoints().forEach(function(waypoint) {
-        waypoint.marker.dragging.disable();
-        });*/ 
-</script>
 @endsection
