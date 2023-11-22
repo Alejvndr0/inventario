@@ -22,7 +22,6 @@ class ClientesController extends Controller
     public function store(Request $request)
     {
         $cliente = new Cliente();
-        $cliente->user_id = $request->input('user_id');
         $cliente->nombre = $request->input('nombre');
         $cliente->direccion = $request->input('direccion');
         $cliente->latitud = $request->input('latitud');
@@ -42,7 +41,6 @@ class ClientesController extends Controller
     public function update(Request $request, $id)
     {
         $cliente = Cliente::find($id);
-        $cliente->user_id = $request->input('user_id');
         $cliente->nombre = $request->input('nombre');
         $cliente->direccion = $request->input('direccion');
         $cliente->latitud = $request->input('latitud');

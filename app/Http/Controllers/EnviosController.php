@@ -77,28 +77,35 @@ class EnviosController extends Controller
         $request->validate([
             'cliente_id' => 'required',
             'almacen_id' => 'required',
+            'user_id' => 'required',
             'fecha_entrega' => 'required|date',
-            'ruta' => 'required', // Asegúrate de validar la ruta según tus necesidades
+            'productos' => 'required|array|min:1',
         ]);
-
-        // Obtener el envío que deseas actualizar
+    
+        // Encuentra el envío que deseas actualizar
         $envio = Envio::findOrFail($id);
-
-        // Actualizar los campos del envío
-        $envio->cliente_id = $request->input('cliente_id');
-        $envio->almacen_id = $request->input('almacen_id');
-        $envio->fecha_entrega = $request->input('fecha_entrega');
-
-        // Almacenar la ruta en el formato adecuado (por ejemplo, WKT)
-        $ruta = $request->input('ruta');
-        // Guardar los cambios
-        $envio->ruta = DB::raw("ST_GeomFromText('LINESTRING($ruta)')");
-        $envio->save();
-
-
-        // Resto de la lógica de redirección o respuesta
-
-        return redirect()->route('envios.index')->with('status', 'Envío actualizado correctamente');
+    
+        // Actualiza los campos del envío
+        $envio->update([
+            'cliente_id' => $request->cliente_id,
+            'almacen_id' => $request->almacen_id,
+            'user_id' => $request->user_id,
+            'fecha_entrega' => $request->fecha_entrega,
+            'detalles' => $request->detalles,
+            'estado' => $request->estado,
+        ]);
+    
+        // Elimina los productos asociados al envío
+        $envio->productos()->detach();
+    
+        // Adjunta los nuevos productos al envío
+        foreach ($request->productos as $producto) {
+            if ($producto['cantidad'] !== null) {
+                $envio->productos()->attach($producto['id'], ['cantidad' => $producto['cantidad']]);
+            }
+        }
+    
+        return redirect()->route('envios.index');
     }
 
     public function destroy($id)

@@ -27,11 +27,14 @@
                     ENVIOS
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('users.index') }}">
-                    USUARIOS
-                </a>
-            </li>
+            @if (auth()->user()->hasRole('Administrador'))
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('users.index') }}">
+                        USUARIOS
+                    </a>
+                </li>
+            @endif
+            
         </ul>
     </nav>
     <div id="map" style="height: 400px;"></div>

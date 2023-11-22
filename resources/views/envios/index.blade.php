@@ -2,11 +2,17 @@
 
 @section('content')
     <div >
-        <h1>Envíos</h1>
-        <p>
-            <a href="{{ route('envios.create') }}" class="btn btn-primary">Crear Envío</a>
-            <a href="{{ route('home') }}" class="btn btn-primary">Inicio</a>
-        </p>
+        @if(auth()->user()->hasRole('Repartidor'))
+            {{-- Aquí mostrarás solo los envíos asignados al repartidor --}}
+            <h1>Envíos Asignados</h1>
+        @else
+            {{-- Aquí mostrarás todos los envíos --}}
+            <h1>Envíos</h1>
+            <p>
+                <a href="{{ route('envios.create') }}" class="btn btn-primary">Crear Envío</a>
+                <a href="{{ route('home') }}" class="btn btn-primary">Inicio</a>
+            </p>
+        @endif
         <table class="table">
             <thead class="text-center">
                 <tr>
@@ -25,7 +31,9 @@
             </thead>
             <tbody>
                 @foreach($envios as $envio)
+                    @if(auth()->user()->hasRole('Repartidor') && $envio->user_id == auth()->user()->id)
                     <tr>
+                        <!-- Resto del código para mostrar detalles del envío -->
                         <td>{{ $envio->id }}</td>
                         <td>{{ $envio->cliente->nombre }}</td>
                         <td>{{ $envio->almacen->nombre }}</td>
@@ -61,6 +69,45 @@
                             <a href="{{url('envios/'.$envio->id.'/rutas')}}" class="btn btn-success">Rutas</a>
                         </td>
                     </tr>
+                    @elseif(!auth()->user()->hasRole('Repartidor'))
+                        <tr>
+                            <!-- Resto del código para mostrar detalles del envío -->
+                            <td>{{ $envio->id }}</td>
+                            <td>{{ $envio->cliente->nombre }}</td>
+                            <td>{{ $envio->almacen->nombre }}</td>
+                            
+                            <td>{{ $envio->fecha_entrega }}</td>
+                            <td>{{ $envio->user->name }}</td>
+                            <td>
+                                <ul>
+                                    @foreach($envio->productos as $producto)
+                                        <li>
+                                            {{ $producto->nombre }} -
+                                            Cantidad: {{ $producto->pivot->cantidad }} -
+                                            Precio unitario: ${{ $producto->precio }} -
+                                            Precio total: ${{ $producto->precio * $producto->pivot->cantidad }}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </td>
+                            <td>{{ $envio->productos->sum('pivot.cantidad') }}</td>
+                            <td>${{ $envio->productos->sum(function($producto) {
+                                return $producto->precio * $producto->pivot->cantidad;
+                            }) }}
+                            </td>
+                            <td>{{ $envio->detalles }}</td>
+                            <td>{{ $envio->estado }}</td>
+                            <td>
+                                <a href="{{ route('envios.edit', $envio->id) }}" class="btn btn-warning">Editar</a>
+                                <form action="{{ route('envios.destroy', $envio->id) }}" method="POST" style="display: inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro?')">Eliminar</button>
+                                </form>
+                                <a href="{{url('envios/'.$envio->id.'/rutas')}}" class="btn btn-success">Rutas</a>
+                            </td>
+                        </tr>
+                    @endif
                 @endforeach
             </tbody>
             <div id="map" style="height: 600px;"></div>
