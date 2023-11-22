@@ -6,7 +6,9 @@ use App\Http\Controllers\ProductosController;
 use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\EnviosController;
 use App\Http\Controllers\AlmacenProductoController;
-use App\Http\Controllers\RutasController;
+use App\Http\Controllers\RutaController;
+use App\Http\Controllers\UserController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -27,11 +29,14 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+Route::resource('users',UserController::class);
 Route::resource('almacenes',AlmacenesController::class);
 Route::resource('productos',ProductosController::class);
 Route::resource('clientes', ClientesController::class);
 Route::resource('envios',EnviosController::class);
 Route::resource('almacenes.productos', AlmacenProductoController::class);
+
+Route::resource('envios.rutas', RutaController::class);
 
 
 // En web.php

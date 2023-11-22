@@ -12,9 +12,11 @@ class Envio extends Model
 
     protected $fillable = [
         'fecha_entrega',
+        'detalles',
+        'estado',
         'almacen_id',
         'cliente_id',
-        'ruta',
+        'user_id',
     ];
 
     protected $table = 'envios';
@@ -27,6 +29,15 @@ class Envio extends Model
     public function almacen()
     {
         return $this->belongsTo(Almacen::class, 'almacen_id');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function productos()
+    {
+        return $this->belongsToMany(Producto::class, 'envio_producto')->withPivot('cantidad');
     }
 
 }

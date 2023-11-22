@@ -27,6 +27,11 @@
                     ENVIOS
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('users.index') }}">
+                    USUARIOS
+                </a>
+            </li>
         </ul>
     </nav>
     <div id="map" style="height: 400px;"></div>

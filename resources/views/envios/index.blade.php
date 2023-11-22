@@ -1,19 +1,25 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
+    <div >
         <h1>Envíos</h1>
         <p>
             <a href="{{ route('envios.create') }}" class="btn btn-primary">Crear Envío</a>
+            <a href="{{ route('home') }}" class="btn btn-primary">Inicio</a>
         </p>
         <table class="table">
-            <thead>
+            <thead class="text-center">
                 <tr>
                     <th>ID</th>
                     <th>Cliente</th>
                     <th>Almacén</th>
                     <th>Fecha de Entrega</th>
-                    <th>Ruta en Mapa</th>
+                    <th>Repartidor</th>
+                    <th>Productos</th>
+                    <th>Cantidad Total</th>
+                    <th>Precio Total</th>
+                    <th>Detalles</th>
+                    <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -23,11 +29,28 @@
                         <td>{{ $envio->id }}</td>
                         <td>{{ $envio->cliente->nombre }}</td>
                         <td>{{ $envio->almacen->nombre }}</td>
+                        
                         <td>{{ $envio->fecha_entrega }}</td>
+                        <td>{{ $envio->user->name }}</td>
                         <td>
-                            <!-- Mapa con ruta -->
-                            <div id="map-{{ $envio->id }}" style="height: 100px;"></div>
+                            <ul>
+                                @foreach($envio->productos as $producto)
+                                    <li>
+                                        {{ $producto->nombre }} -
+                                        Cantidad: {{ $producto->pivot->cantidad }} -
+                                        Precio unitario: ${{ $producto->precio }} -
+                                        Precio total: ${{ $producto->precio * $producto->pivot->cantidad }}
+                                    </li>
+                                @endforeach
+                            </ul>
                         </td>
+                        <td>{{ $envio->productos->sum('pivot.cantidad') }}</td>
+                        <td>${{ $envio->productos->sum(function($producto) {
+                            return $producto->precio * $producto->pivot->cantidad;
+                        }) }}
+                        </td>
+                        <td>{{ $envio->detalles }}</td>
+                        <td>{{ $envio->estado }}</td>
                         <td>
                             <a href="{{ route('envios.edit', $envio->id) }}" class="btn btn-warning">Editar</a>
                             <form action="{{ route('envios.destroy', $envio->id) }}" method="POST" style="display: inline;">
@@ -35,6 +58,7 @@
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro?')">Eliminar</button>
                             </form>
+                            <a href="{{url('envios/'.$envio->id.'/rutas')}}" class="btn btn-success">Rutas</a>
                         </td>
                     </tr>
                 @endforeach
