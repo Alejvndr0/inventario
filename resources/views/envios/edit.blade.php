@@ -29,7 +29,6 @@
                         @if(isset($envio))
                             <div class="form-group">
                                 <label for="estado">Estado:</label>
-                                <input type="text" name="estado" class="form-control">
                                 <select name="estado" class="form-control">
                                     <option value="Pendiente">Pendiente</option>
                                     <option value="En envio">En envio</option>
@@ -59,7 +58,9 @@
                             <label for="user_id">Repartidor:</label>
                             <select name="user_id" class="form-control">
                                 @foreach($usuarios as $usuario)
+                                    @if($usuario->hasrole("Repartidor"))
                                     <option value="{{ $usuario->id }}">{{ $usuario->name }}</option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>
@@ -82,10 +83,6 @@
                             @endforeach
                         </div>
                         
-                        @if (isset($envio))
-                            <div id="map" style="height: 400px;"></div>
-                            <input type="hidden" name="ruta" id="ruta" value="{{ $envio->ruta ?? '' }}">
-                        @endif
                         @if (isset($envio))
                             <div>
                                 <!--<input type="submit" name="botonsito" value="Editar">-->

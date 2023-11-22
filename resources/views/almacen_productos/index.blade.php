@@ -14,6 +14,7 @@
         <h1>Lista de Productos - Almacen: {{$almacen->nombre}} </h1>
         <br>
         <a href="{{ route('home') }}" class="btn btn-primary">inicio</a>
+        <a href="{{ route('almacenes.index') }}" class="btn btn-primary">Atras</a>
         <a href="{{ url('almacenes/'.$almacen->id.'/productos/create') }}" class="btn btn-primary">Agregar Producto</a>
         <br>
         <br>
@@ -35,10 +36,13 @@
                         <td>{{ $producto->nombre }}</td>
                         <td>{{ $producto->descripcion }}</td>
                         <td>{{ $producto->precio }}</td>
-                        <td>{{$producto->cantidad}}
-                            @foreach ($producto->stocks as $stock)
-                            {{ $stock->cantidad }}<br>
+                        <td>
+                            @foreach ($almacen->productos as $productoEnAlmacen)
+                                @if ($productoEnAlmacen->id === $producto->id)
+                                    Cantidad: {{ $productoEnAlmacen->pivot->cantidad }}
+                                @endif
                             @endforeach
+                        
                         </td>
                         <td>
                             <a href="{{ url('almacenes/'.$almacen->id.'/productos/'.$producto->id.'/edit') }}" class="btn btn-warning">Editar</a>

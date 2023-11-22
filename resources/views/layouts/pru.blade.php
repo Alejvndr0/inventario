@@ -23,8 +23,6 @@
                         {{ Auth::user()->name }}
                     </a>
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown"> <!-- Añadimos dropdown-menu-end -->
-                        <a class="dropdown-item" href="#">Editar Perfil</a>
-                        <a class="dropdown-item" href="#">agregar nuevo usuario</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{ route('logout') }}"
                             onclick="event.preventDefault();

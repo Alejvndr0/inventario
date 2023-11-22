@@ -18,25 +18,6 @@
                 <label for="precio">Precio</label>
                 <input type="text" id="precio" name="precio" class="form-control" required>
             </div>
-
-            <!-- Campo "almacenes" como selección múltiple -->
-            <div class="form-group">
-                <label for="almacenes">Selecciona los almacenes:</label>
-                <select name="almacenes[]" id="almacenes" class="form-control" multiple required>
-                    @foreach ($almacenes as $almacen)
-                        <option value="{{ $almacen->id }}">{{ $almacen->nombre }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <!-- Agregar campos para la cantidad de stock en almacén -->
-            @foreach ($almacenes as $almacen)
-                <div class="form-group">
-                    <label for="cantidad_{{ $almacen->id }}">Stock en {{ $almacen->nombre }}</label>
-                    <input type="number" id="cantidad_{{ $almacen->id }}" name="cantidad_{{ $almacen->id }}"
-                        class="form-control" value="0">
-                </div>
-            @endforeach
             <br>
             <a href="{{ route('productos.index') }}" class="btn btn-primary">volver</a>
             <button type="submit" class="btn btn-primary">Crear Producto</button>

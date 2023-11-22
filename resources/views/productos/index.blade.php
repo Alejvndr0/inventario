@@ -17,20 +17,32 @@
                     <th>Descripción</th>
                     <th>Precio</th>
                     <th>Stock en Almacén</th>
+                    <th>Stock Total</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($productos as $producto)
+                    @foreach ($productos as $producto)
                     <tr>
                         <td>{{ $producto->id }}</td>
                         <td>{{ $producto->nombre }}</td>
                         <td>{{ $producto->descripcion }}</td>
                         <td>{{ $producto->precio }}</td>
                         <td>
-                            @foreach ($producto->stocks as $stock)
-                                {{ $stock->almacen->nombre }}: {{ $stock->cantidad }}<br>
+                            <?php
+                             $cantidadTotal=0
+                            ?>
+                            @foreach($producto->almacenes as $almacen)
+                                Almacén: {{ $almacen->nombre }}, Cantidad: {{ $almacen->pivot->cantidad }}<br>
+                                
+                                <?php
+                                    $cantidadTotal += $almacen->pivot->cantidad;
+                                ?>
                             @endforeach
+
+                        </td>
+                        <td>
+                            {{ $cantidadTotal }}
                         </td>
                         <td>
                             <a href="{{ route('productos.edit', $producto->id) }}" class="btn btn-warning">Editar</a>
@@ -42,7 +54,7 @@
                             </form>
                         </td>
                     </tr>
-                @endforeach
+                    @endforeach
             </tbody>
         </table>
     </div>
